@@ -12,7 +12,7 @@ public class ChallongeProperties {
      */
     private String apiKey;
 
-    private String baseUrl = "https://api.challonge.com/v2.1";
+    private String baseUrl = "https://api.challonge.com/v2.1/communities/wbbx";
 
     public String getApiKey() {
         return apiKey;
