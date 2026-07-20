@@ -22,4 +22,12 @@ public interface RankingService {
      * highest first.
      */
     List<LeaderboardRow> getLeaderboard();
+
+    /**
+     * Zeroes out points for every Player. The ranking_points audit log is left
+     * intact — this only resets the running totals, not the history of awards.
+     * 
+     * @return the number of players reset
+     */
+    long resetAllScores();
 }

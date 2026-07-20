@@ -5,8 +5,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import com.mongodb.client.result.UpdateResult;
 import yomi_adt.wpgbbx.dto.RankingDtos.LeaderboardRow;
 import yomi_adt.wpgbbx.dto.RankingDtos.RankingPointRequest;
 import yomi_adt.wpgbbx.dto.RankingDtos.RecordPointsResponse;
@@ -77,6 +80,13 @@ public class RankingServiceImpl implements RankingService {
         return results.getMappedResults().stream()
                 .map(r -> new LeaderboardRow(r.id, r.totalPoints, r.tournamentsPlayed))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public long resetAllScores() {
+        Query matchAll = new Query();
+        UpdateResult result = mongoTemplate.updateMulti(matchAll, Update.update("points", 0), Player.class);
+        return result.getModifiedCount();
     }
 
     private static class LeaderboardAggregateRow {

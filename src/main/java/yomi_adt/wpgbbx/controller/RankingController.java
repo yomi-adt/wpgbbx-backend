@@ -32,6 +32,15 @@ public class RankingController {
         return ResponseEntity.ok(rankingService.getLeaderboard());
     }
 
+    @PostMapping("/reset-scores")
+    public ResponseEntity<?> resetAllScores() {
+        long resetCount = rankingService.resetAllScores();
+        return ResponseEntity.ok(new ResetScoresResponse(resetCount));
+    }
+
     public record PlayerNotFoundBody(String code, String participantName) {
+    }
+
+    public record ResetScoresResponse(long playersReset) {
     }
 }
