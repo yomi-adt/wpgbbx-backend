@@ -11,13 +11,15 @@ public class PointRule {
 
     private String label;
     private double points;
+    private PointRuleType type = PointRuleType.BOOLEAN;
 
     public PointRule() {
     }
 
-    public PointRule(String label, double points) {
+    public PointRule(String label, double points, PointRuleType type) {
         this.label = label;
         this.points = points;
+        this.type = type != null ? type : PointRuleType.BOOLEAN;
     }
 
     public String getId() {
@@ -42,5 +44,13 @@ public class PointRule {
 
     public void setPoints(double points) {
         this.points = points;
+    }
+
+    public PointRuleType getType() {
+        return type;
+    }
+
+    public void setType(PointRuleType type) {
+        this.type = type;
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class RankingDtos {
 
-    public record AppliedRuleInput(String label, double points) {
+    public record AppliedRuleInput(String label, double points, int count) {
     }
 
     public record RankingPointRequest(

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yomi_adt.wpgbbx.dto.PointRuleDtos.PointRuleRequest;
 import yomi_adt.wpgbbx.model.PointRule;
+import yomi_adt.wpgbbx.model.PointRuleType;
 import yomi_adt.wpgbbx.repository.PointRuleRepository;
 import yomi_adt.wpgbbx.service.exceptions.PointRuleNotFoundException;
 import yomi_adt.wpgbbx.service.PointRuleService;
@@ -23,7 +24,10 @@ public class PointRuleServiceImpl implements PointRuleService {
 
     @Override
     public PointRule createRule(PointRuleRequest request) {
-        PointRule rule = new PointRule(request.label(), request.points());
+        PointRule rule = new PointRule(
+                request.label(),
+                request.points(),
+                request.type() != null ? request.type() : PointRuleType.BOOLEAN);
         return pointRuleRepository.save(rule);
     }
 
@@ -33,6 +37,7 @@ public class PointRuleServiceImpl implements PointRuleService {
                 .orElseThrow(() -> new PointRuleNotFoundException(id));
         rule.setLabel(request.label());
         rule.setPoints(request.points());
+        rule.setType(request.type() != null ? request.type() : PointRuleType.BOOLEAN);
         return pointRuleRepository.save(rule);
     }
 

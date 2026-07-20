@@ -28,14 +28,18 @@ public class RankingPointEntry {
 
     public static class AppliedRule {
         private String label;
+        /** Per-occurrence point value from the rule at the time it was applied. */
         private double points;
+        /** 1 for a BOOLEAN rule that applied; the entered count for a COUNT rule. */
+        private int count = 1;
 
         public AppliedRule() {
         }
 
-        public AppliedRule(String label, double points) {
+        public AppliedRule(String label, double points, int count) {
             this.label = label;
             this.points = points;
+            this.count = count;
         }
 
         public String getLabel() {
@@ -52,6 +56,14 @@ public class RankingPointEntry {
 
         public void setPoints(double points) {
             this.points = points;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
         }
     }
 

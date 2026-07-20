@@ -55,7 +55,7 @@ public class RankingServiceImpl implements RankingService {
         entry.setTotalPoints(request.totalPoints());
         if (request.appliedRules() != null) {
             entry.setAppliedRules(request.appliedRules().stream()
-                    .map(r -> new RankingPointEntry.AppliedRule(r.label(), r.points()))
+                    .map(r -> new RankingPointEntry.AppliedRule(r.label(), r.points(), r.count()))
                     .collect(Collectors.toList()));
         }
         rankingPointRepository.save(entry);
@@ -65,9 +65,6 @@ public class RankingServiceImpl implements RankingService {
 
     @Override
     public List<LeaderboardRow> getLeaderboard() {
-        // Aggregation (grouping/summing across all participants) isn't something
-        // MongoRepository exposes directly, so MongoTemplate is used here while
-        // simple CRUD (recordPoints) goes through the repositories above.
         Aggregation aggregation = newAggregation(
                 group("playerUsername")
                         .sum("totalPoints").as("totalPoints")
@@ -82,10 +79,6 @@ public class RankingServiceImpl implements RankingService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Shape Mongo's aggregation groups into ("_id" maps to playerUsername via
-     * "id").
-     */
     private static class LeaderboardAggregateRow {
         public String id;
         public double totalPoints;
