@@ -25,6 +25,8 @@ public class ChallongeServiceImpl implements ChallongeService {
     @Autowired
     private ChallongeProperties challongeProperties;
 
+    private static final int PARTICIPANTS_PAGE_SIZE = 100;
+
     /**
      * NOTE: verify field names against a live response once you test with
      * your API key — third-party mirrors of the v2.1 docs show slightly
@@ -40,15 +42,37 @@ public class ChallongeServiceImpl implements ChallongeService {
                 JsonApiSingleResponse.class);
         TournamentSummary tournament = toTournamentSummary(tournamentResp.data);
 
-        JsonApiListResponse participantsResp = get(
-                baseUrl + "/tournaments/" + tournamentSlugOrId + "/participants.json",
-                JsonApiListResponse.class);
-        List<ParticipantSummary> participants = new ArrayList<>();
-        for (JsonApiResource r : participantsResp.data) {
-            participants.add(toParticipantSummary(r));
-        }
+        List<ParticipantSummary> participants = getAllParticipants(baseUrl, tournamentSlugOrId);
 
         return new TournamentDetailResponse(tournament, participants);
+    }
+
+    /**
+     * Challonge defaults to 25 participants per page — fetch every page
+     * (requesting the max page size to minimize request count) until a page
+     * comes back with fewer than requested, meaning it was the last one.
+     */
+    private List<ParticipantSummary> getAllParticipants(String baseUrl, String tournamentSlugOrId) {
+        List<ParticipantSummary> allParticipants = new ArrayList<>();
+        int page = 1;
+
+        while (true) {
+            String url = baseUrl + "/tournaments/" + tournamentSlugOrId + "/participants.json"
+                    + "?page=" + page + "&per_page=" + PARTICIPANTS_PAGE_SIZE;
+            JsonApiListResponse participantsResp = get(url, JsonApiListResponse.class);
+
+            List<JsonApiResource> pageData = participantsResp.data != null ? participantsResp.data : List.of();
+            for (JsonApiResource r : pageData) {
+                allParticipants.add(toParticipantSummary(r));
+            }
+
+            if (pageData.size() < PARTICIPANTS_PAGE_SIZE) {
+                break;
+            }
+            page++;
+        }
+
+        return allParticipants;
     }
 
     private <T> T get(String url, Class<T> responseType) {
