@@ -16,14 +16,16 @@ public class FilterConfig {
         FilterRegistrationBean<OrganizerAuthFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new OrganizerAuthFilter(organizerProperties.getApiKey()));
 
-        // Organizer-only routes. Public/read routes (leaderboard, player list)
-        // are intentionally NOT included here — add any other admin-only
-        // Player endpoints you have to this list as well.
+        // Organizer-only routes. Public/read routes (leaderboards, player/clan
+        // lists) are intentionally NOT included here — add any other admin-only
+        // Player/Clan write endpoints you have (e.g. clan creation) to this list too.
         registration.addUrlPatterns(
                 "/api/challonge", "/api/challonge/*",
                 "/api/point-rules", "/api/point-rules/*",
-                "/api/rankings/points",
-                "/api/rankings/reset-scores");
+                "/api/rankings/players/points",
+                "/api/rankings/players/reset-scores",
+                "/api/rankings/clans/points",
+                "/api/rankings/clans/reset-scores");
         registration.setOrder(1);
         return registration;
     }

@@ -12,14 +12,16 @@ public class PointRule {
     private String label;
     private double points;
     private PointRuleType type = PointRuleType.BOOLEAN;
+    private EntityType appliesTo = EntityType.PLAYER;
 
     public PointRule() {
     }
 
-    public PointRule(String label, double points, PointRuleType type) {
+    public PointRule(String label, double points, PointRuleType type, EntityType appliesTo) {
         this.label = label;
         this.points = points;
         this.type = type != null ? type : PointRuleType.BOOLEAN;
+        this.appliesTo = appliesTo != null ? appliesTo : EntityType.PLAYER;
     }
 
     public String getId() {
@@ -52,5 +54,13 @@ public class PointRule {
 
     public void setType(PointRuleType type) {
         this.type = type;
+    }
+
+    public EntityType getAppliesTo() {
+        return appliesTo;
+    }
+
+    public void setAppliesTo(EntityType appliesTo) {
+        this.appliesTo = appliesTo;
     }
 }

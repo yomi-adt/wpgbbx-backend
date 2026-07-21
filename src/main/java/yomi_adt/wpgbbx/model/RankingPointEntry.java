@@ -15,12 +15,14 @@ public class RankingPointEntry {
     private String tournamentId;
     private String tournamentName;
     /**
-     * The raw name as it came from Challonge (may differ from the player's
-     * username).
+     * The raw name as it came from Challonge (may differ from the resolved entity
+     * key).
      */
     private String participantName;
-    /** The Player.username this award was actually applied to. */
-    private String playerUsername;
+    /** PLAYER or CLAN. */
+    private EntityType entityType;
+    /** The Player.username or Clan.tag this award was actually applied to. */
+    private String entityKey;
     private List<AppliedRule> appliedRules;
     private double multiplier;
     private double totalPoints;
@@ -99,12 +101,20 @@ public class RankingPointEntry {
         this.participantName = participantName;
     }
 
-    public String getPlayerUsername() {
-        return playerUsername;
+    public EntityType getEntityType() {
+        return entityType;
     }
 
-    public void setPlayerUsername(String playerUsername) {
-        this.playerUsername = playerUsername;
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+    }
+
+    public String getEntityKey() {
+        return entityKey;
+    }
+
+    public void setEntityKey(String entityKey) {
+        this.entityKey = entityKey;
     }
 
     public List<AppliedRule> getAppliedRules() {

@@ -9,25 +9,41 @@ import java.util.List;
 public interface RankingService {
 
     /**
-     * Logs the point award and adds it to the matched Player's running total.
-     * Resolution order: request.playerUsername() if present, otherwise
-     * request.participantName() is tried as a username.
+     * Logs the point award and adds it to the matched entity's running total.
+     * Resolution order: request.entityKey() if present, otherwise the entity's
+     * own key-extraction rule is applied to request.participantName().
      * 
-     * @throws PlayerNotFoundException if neither resolves to an existing Player
+     * @throws yomi_adt.wpgbbx.service.exceptions.EntityNotFoundException
+     *                                                                              if
+     *                                                                              no
+     *                                                                              match
+     *                                                                              is
+     *                                                                              found
+     * 
+     * @throws yomi_adt.wpgbbx.service.exceptions.MalformedParticipantNameException if
+     *                                                                              the
+     *                                                                              participant
+     *                                                                              name
+     *                                                                              doesn't
+     *                                                                              match
+     *                                                                              the
+     *                                                                              expected
+     *                                                                              format
+     *                                                                              for
+     *                                                                              this
+     *                                                                              entity
+     *                                                                              type
      */
     RecordPointsResponse recordPoints(RankingPointRequest request);
 
     /**
-     * Sums totalPoints per participant across all recorded tournaments, ranked
-     * highest first.
+     * Sums totalPoints per entity across all recorded tournaments, ranked highest
+     * first.
      */
     List<LeaderboardRow> getLeaderboard();
 
     /**
-     * Zeroes out points for every Player. The ranking_points audit log is left
-     * intact — this only resets the running totals, not the history of awards.
-     * 
-     * @return the number of players reset
+     * Zeroes out points for every entity of this type. Audit log is left intact.
      */
     long resetAllScores();
 }

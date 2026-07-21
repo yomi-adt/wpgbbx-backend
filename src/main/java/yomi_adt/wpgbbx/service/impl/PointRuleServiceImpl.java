@@ -3,6 +3,7 @@ package yomi_adt.wpgbbx.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yomi_adt.wpgbbx.dto.PointRuleDtos.PointRuleRequest;
+import yomi_adt.wpgbbx.model.EntityType;
 import yomi_adt.wpgbbx.model.PointRule;
 import yomi_adt.wpgbbx.model.PointRuleType;
 import yomi_adt.wpgbbx.repository.PointRuleRepository;
@@ -23,11 +24,17 @@ public class PointRuleServiceImpl implements PointRuleService {
     }
 
     @Override
+    public List<PointRule> getRulesByType(EntityType appliesTo) {
+        return pointRuleRepository.findByAppliesTo(appliesTo);
+    }
+
+    @Override
     public PointRule createRule(PointRuleRequest request) {
         PointRule rule = new PointRule(
                 request.label(),
                 request.points(),
-                request.type() != null ? request.type() : PointRuleType.BOOLEAN);
+                request.type() != null ? request.type() : PointRuleType.BOOLEAN,
+                request.appliesTo() != null ? request.appliesTo() : EntityType.PLAYER);
         return pointRuleRepository.save(rule);
     }
 
@@ -38,6 +45,7 @@ public class PointRuleServiceImpl implements PointRuleService {
         rule.setLabel(request.label());
         rule.setPoints(request.points());
         rule.setType(request.type() != null ? request.type() : PointRuleType.BOOLEAN);
+        rule.setAppliesTo(request.appliesTo() != null ? request.appliesTo() : EntityType.PLAYER);
         return pointRuleRepository.save(rule);
     }
 

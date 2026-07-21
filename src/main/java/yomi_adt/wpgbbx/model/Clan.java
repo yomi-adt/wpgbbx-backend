@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "clans")
-public class Clan {
+public class Clan implements RankableEntity {
 
     @Id
     private String tag;
@@ -46,5 +46,10 @@ public class Clan {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    @Override
+    public String getRankKey() {
+        return tag;
     }
 }

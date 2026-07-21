@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yomi_adt.wpgbbx.dto.PointRuleDtos.PointRuleRequest;
+import yomi_adt.wpgbbx.model.EntityType;
 import yomi_adt.wpgbbx.model.PointRule;
 import yomi_adt.wpgbbx.service.exceptions.PointRuleNotFoundException;
 import yomi_adt.wpgbbx.service.PointRuleService;
@@ -18,9 +19,16 @@ public class PointRuleController {
     @Autowired
     private PointRuleService pointRuleService;
 
+    /**
+     * e.g. GET /api/point-rules?appliesTo=CLAN — omit the param to get every rule
+     * regardless of type.
+     */
     @GetMapping
-    public ResponseEntity<List<PointRule>> getAllRules() {
-        return ResponseEntity.ok(pointRuleService.getAllRules());
+    public ResponseEntity<List<PointRule>> getRules(@RequestParam(required = false) EntityType appliesTo) {
+        List<PointRule> rules = appliesTo != null
+                ? pointRuleService.getRulesByType(appliesTo)
+                : pointRuleService.getAllRules();
+        return ResponseEntity.ok(rules);
     }
 
     @PostMapping

@@ -1,5 +1,7 @@
 package yomi_adt.wpgbbx.dto;
 
+import yomi_adt.wpgbbx.model.EntityType;
+
 import java.util.List;
 
 public class RankingDtos {
@@ -10,24 +12,23 @@ public class RankingDtos {
     public record RankingPointRequest(
             String tournamentId,
             String tournamentName,
+            /** Raw Challonge participant name, e.g. "PlayerName" or "[TAG] PlayerName". */
             String participantName,
             /**
-             * Optional: set when the admin has manually resolved participantName to a
+             * Optional: set once the admin has manually resolved participantName to a
              * specific
-             * Player after a PLAYER_NOT_FOUND response, since Challonge's display name may
-             * not
-             * match the app's username exactly. When absent, participantName is tried
-             * as-is.
+             * entity (Player.username or Clan.tag) after an EntityNotFound/malformed
+             * response.
              */
-            String playerUsername,
+            String entityKey,
             List<AppliedRuleInput> appliedRules,
             double multiplier,
             double totalPoints) {
     }
 
-    public record RecordPointsResponse(String playerUsername, int updatedTotalPoints) {
+    public record RecordPointsResponse(EntityType entityType, String entityKey, int updatedTotalPoints) {
     }
 
-    public record LeaderboardRow(String participantName, double totalPoints, long tournamentsPlayed) {
+    public record LeaderboardRow(String entityKey, double totalPoints, long tournamentsPlayed) {
     }
 }
