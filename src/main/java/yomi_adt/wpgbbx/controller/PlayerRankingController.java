@@ -36,6 +36,11 @@ public class PlayerRankingController {
         return ResponseEntity.ok(playerRankingService.getLeaderboard());
     }
 
+    @GetMapping("/{username}/entries")
+    public ResponseEntity<?> getEntries(@PathVariable String username) {
+        return ResponseEntity.ok(playerRankingService.getEntriesForEntity(username));
+    }
+
     @PostMapping("/reset-scores")
     public ResponseEntity<?> resetAllScores() {
         long resetCount = playerRankingService.resetAllScores();

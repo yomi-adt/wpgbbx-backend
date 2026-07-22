@@ -5,8 +5,22 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+import java.util.Map;
+
 @Configuration
 public class FilterConfig {
+
+    // For each URL, the
+    public static final Map<String, List<String>> urlToFilteredVerbsMap = Map.of(
+            "/api/challonge", List.of("GET"),
+            "/api/challonge/*", List.of("GET"),
+            "/api/point-rules", List.of("GET"),
+            "/api/point-rules/*", List.of("GET"),
+            "/api/rankings/players/points", List.of("GET"),
+            "/api/rankings/players/reset-scores", List.of("GET"),
+            "/api/rankings/clans/points", List.of("GET"),
+            "/api/rankings/clans/reset-scores", List.of("GET"));
 
     @Autowired
     private OrganizerProperties organizerProperties;

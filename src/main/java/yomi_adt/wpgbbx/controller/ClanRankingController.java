@@ -38,6 +38,11 @@ public class ClanRankingController {
         return ResponseEntity.ok(clanRankingService.getLeaderboard());
     }
 
+    @GetMapping("/{tag}/entries")
+    public ResponseEntity<?> getEntries(@PathVariable String tag) {
+        return ResponseEntity.ok(clanRankingService.getEntriesForEntity(tag));
+    }
+
     @PostMapping("/reset-scores")
     public ResponseEntity<?> resetAllScores() {
         long resetCount = clanRankingService.resetAllScores();

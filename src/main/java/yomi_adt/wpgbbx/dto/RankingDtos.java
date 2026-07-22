@@ -31,4 +31,11 @@ public class RankingDtos {
 
     public record LeaderboardRow(String entityKey, double totalPoints, long tournamentsPlayed) {
     }
+
+    public record RankingEntryView(
+            String entityKey,
+            String tournamentName,
+            List<AppliedRuleInput> appliedRules,
+            double totalPoints) {
+    }
 }
