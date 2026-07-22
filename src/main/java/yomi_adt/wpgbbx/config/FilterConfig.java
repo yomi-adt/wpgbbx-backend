@@ -5,34 +5,20 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @Configuration
 public class FilterConfig {
 
-    // For each URL, the
-    public static final Map<String, List<String>> urlToFilteredVerbsMap = Map.of(
-            "/api/challonge", List.of("GET"),
-            "/api/challonge/*", List.of("GET"),
-            "/api/point-rules", List.of("GET"),
-            "/api/point-rules/*", List.of("GET"),
-            "/api/rankings/players/points", List.of("GET"),
-            "/api/rankings/players/reset-scores", List.of("GET"),
-            "/api/rankings/clans/points", List.of("GET"),
-            "/api/rankings/clans/reset-scores", List.of("GET"));
-
     @Autowired
     private OrganizerProperties organizerProperties;
 
+    /** Routes that are organizer-only for every HTTP method, no exceptions. */
     @Bean
     public FilterRegistrationBean<OrganizerAuthFilter> organizerAuthFilterRegistration() {
         FilterRegistrationBean<OrganizerAuthFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new OrganizerAuthFilter(organizerProperties.getApiKey()));
 
-        // Organizer-only routes. Public/read routes (leaderboards, player/clan
-        // lists) are intentionally NOT included here — add any other admin-only
-        // Player/Clan write endpoints you have (e.g. clan creation) to this list too.
         registration.addUrlPatterns(
                 "/api/challonge", "/api/challonge/*",
                 "/api/point-rules", "/api/point-rules/*",
@@ -40,6 +26,23 @@ public class FilterConfig {
                 "/api/rankings/players/reset-scores",
                 "/api/rankings/clans/points",
                 "/api/rankings/clans/reset-scores");
+        registration.setOrder(1);
+        return registration;
+    }
+
+    /**
+     * Routes where GET must stay public (roster browsing, the match-picker
+     * dropdown, the Clan Scoring page's entity list) but writes still need
+     * the organizer key — creating/editing/deleting a Player or Clan.
+     */
+    @Bean
+    public FilterRegistrationBean<OrganizerAuthFilter> organizerWriteOnlyFilterRegistration() {
+        FilterRegistrationBean<OrganizerAuthFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new OrganizerAuthFilter(organizerProperties.getApiKey(), Set.of("GET")));
+
+        registration.addUrlPatterns(
+                "/api/players", "/api/players/*",
+                "/api/clans", "/api/clans/*");
         registration.setOrder(1);
         return registration;
     }
