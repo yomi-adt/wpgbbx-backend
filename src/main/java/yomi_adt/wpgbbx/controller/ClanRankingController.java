@@ -45,13 +45,13 @@ public class ClanRankingController {
 
     @PostMapping("/reset-scores")
     public ResponseEntity<?> resetAllScores() {
-        long resetCount = clanRankingService.resetAllScores();
-        return ResponseEntity.ok(new ResetScoresResponse(resetCount));
+        var result = clanRankingService.resetAllScores();
+        return ResponseEntity.ok(new ResetScoresResponse(result.entitiesReset(), result.logEntriesRemoved()));
     }
 
     public record NotFoundBody(String code, String participantName) {
     }
 
-    public record ResetScoresResponse(long entitiesReset) {
+    public record ResetScoresResponse(long entitiesReset, long logEntriesRemoved) {
     }
 }

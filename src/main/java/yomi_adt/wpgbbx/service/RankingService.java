@@ -4,6 +4,7 @@ import yomi_adt.wpgbbx.dto.RankingDtos.LeaderboardRow;
 import yomi_adt.wpgbbx.dto.RankingDtos.RankingEntryView;
 import yomi_adt.wpgbbx.dto.RankingDtos.RankingPointRequest;
 import yomi_adt.wpgbbx.dto.RankingDtos.RecordPointsResponse;
+import yomi_adt.wpgbbx.dto.RankingDtos.ResetResult;
 
 import java.util.List;
 
@@ -42,9 +43,11 @@ public interface RankingService {
         List<LeaderboardRow> getLeaderboard();
 
         /**
-         * Zeroes out points for every entity of this type. Audit log is left intact.
+         * Zeroes out points for every entity of this type AND deletes every
+         * audit log entry (ranking_points) for this entity type — a full reset,
+         * not just the running totals.
          */
-        long resetAllScores();
+        ResetResult resetAllScores();
 
         /**
          * Every recorded award for one entity (by username or tag), most recent first.

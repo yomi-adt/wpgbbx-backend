@@ -38,4 +38,7 @@ public class RankingDtos {
             List<AppliedRuleInput> appliedRules,
             double totalPoints) {
     }
+
+    public record ResetResult(long entitiesReset, long logEntriesRemoved) {
+    }
 }

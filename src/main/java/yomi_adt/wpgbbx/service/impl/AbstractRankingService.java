@@ -1,5 +1,6 @@
 package yomi_adt.wpgbbx.service.impl;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -16,6 +17,7 @@ import yomi_adt.wpgbbx.dto.RankingDtos.LeaderboardRow;
 import yomi_adt.wpgbbx.dto.RankingDtos.RankingEntryView;
 import yomi_adt.wpgbbx.dto.RankingDtos.RankingPointRequest;
 import yomi_adt.wpgbbx.dto.RankingDtos.RecordPointsResponse;
+import yomi_adt.wpgbbx.dto.RankingDtos.ResetResult;
 import yomi_adt.wpgbbx.model.EntityType;
 import yomi_adt.wpgbbx.model.RankableEntity;
 import yomi_adt.wpgbbx.model.RankingPointEntry;
@@ -120,10 +122,15 @@ public abstract class AbstractRankingService<T extends RankableEntity> implement
         }
 
         @Override
-        public long resetAllScores() {
+        public ResetResult resetAllScores() {
                 Query matchAll = new Query();
-                UpdateResult result = mongoTemplate.updateMulti(matchAll, Update.update("points", 0), entityClass());
-                return result.getModifiedCount();
+                UpdateResult updateResult = mongoTemplate.updateMulti(matchAll, Update.update("points", 0),
+                                entityClass());
+
+                Query matchThisEntityType = new Query(Criteria.where("entityType").is(entityType().name()));
+                DeleteResult deleteResult = mongoTemplate.remove(matchThisEntityType, RankingPointEntry.class);
+
+                return new ResetResult(updateResult.getModifiedCount(), deleteResult.getDeletedCount());
         }
 
         @Override
